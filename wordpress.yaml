@@ -4,7 +4,6 @@ db:
   defines: runnable
   inherits: mysql/latest
   containers:
-    defines: containers
     mysql:
       image: mysql:8.0
       environment:
@@ -17,10 +16,6 @@ db:
       ports:
         - 3306
   variables:
-    defines: variables
-    mysql-root-password:
-      type: string
-      value: "RhgDPXPEnAgJ5q5g"
     wordpress-db-user:
       type: string
       value: "db_user"
@@ -30,20 +25,21 @@ db:
     wordpress-db-name:
       type: string
       value: "wpdb"
+    mysql-root-password:
+      type: string
+      value: "RhgDPXPEnAgJ5q5g"
     db-data-path:
       type: string
-      value: "./data/db"
+      value: <- `${monk-volume-path}/mysql/db`
   checks:
-    defines: checks
-    readyness:
-      code: true
+    readiness:
+      code: "true"
       period: 15
       initialDelay: 10
 
 web:
   defines: runnable
   containers:
-    defines: containers
     wordpress:
       image: docker.io/wordpress
       environment:
@@ -51,7 +47,7 @@ web:
         - <- `WORDPRESS_DB_PASSWORD=${wordpress-db-password}`
         - <- `WORDPRESS_DB_NAME=${wordpress-db-name}`
         - <- `WORDPRESS_DB_USER=${wordpress-db-user}`
-      volumes:
+      paths:
         - <- `${wordpress-data-path}:/var/www/html`                                     
       ports:
         - 80
@@ -62,11 +58,25 @@ web:
         - monk-wordpress/db
       timeout: 30
   variables:
-    defines: variables
+    wordpress-db-user:
+      type: string
+    wordpress-db-password:
+      type: string
+    wordpress-db-name:
+      type: string
     wordpress-db-host:
       type: string
       value: <- get-hostname("wordpress/db", "mysql")
     wordpress-data-path:
       type: string
-      value: "./data/web"
-    
+      value: <- `${monk-volume-path}/wordpress/web`
+
+stack:
+  defines: process-group
+  runnable-list:
+    - monk-wordpress/db
+    - monk-wordpress/web
+  variables:
+    wordpress-db-user: "db_user"
+    wordpress-db-password: "RhgDPXPEnAgJ5q5g"
+    wordpress-db-name: "wpdb"
