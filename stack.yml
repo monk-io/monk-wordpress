@@ -1,14 +1,7 @@
 namespace: monk-wordpress
 
-stack:
-  defines: process-group
-  runnable-list:
-    - monk-wordpress/db
-    - monk-wordpress/web
-  variables:
-    wordpress-db-user:
-      type: string
-      value: "db_user"
+group-variables:
+    wordpress-db-user: db_user
     wordpress-db-password:
       type: string
       value: "RhgDPXPEnAgJ5q5g"
@@ -23,3 +16,13 @@ stack:
     db-data-path:
       type: string
       value: <- `${monk-volume-path}/mysql/db`
+
+stack:
+  defines: process-group
+  runnable-list:
+    - monk-wordpress/db
+    - monk-wordpress/web
+  variables:
+    inherits: ./group-variables
+
+    

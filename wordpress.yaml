@@ -5,19 +5,15 @@ db:
   containers:
     mysql:
       image: mysql:8.0
+      environment:
+        - <- `MYSQL_USER=${wordpress-db-user}`
       paths:
         - <- `${db-data-path}:/var/lib/mysql`
       ports:
         - 3306
   variables:
-    wordpress-db-user:
-      env: MYSQL_USER
-      type: string
-      value: "db_user"
     wordpress-db-password:
       env: MYSQL_PASSWORD
-      type: string
-      value: "RhgDPXPEnAgJ5q5g"
     wordpress-db-name:
       env: MYSQL_DATABASE
       type: string
