@@ -1,31 +1,29 @@
 namespace: monk-wordpress
 
 db:
-  defines: runnable
   inherits: mysql/latest
   containers:
     mysql:
       image: mysql:8.0
-      environment:
-        - <- `MYSQL_ROOT_PASSWORD=${mysql-root-password}`
-        - <- `MYSQL_USER=${wordpress-db-user}`
-        - <- `MYSQL_PASSWORD=${wordpress-db-password}`
-        - <- `MYSQL_DATABASE=${wordpress-db-name}`
       paths:
         - <- `${db-data-path}:/var/lib/mysql`
       ports:
         - 3306
   variables:
     wordpress-db-user:
+      env: MYSQL_USER
       type: string
       value: "db_user"
     wordpress-db-password:
+      env: MYSQL_PASSWORD
       type: string
       value: "RhgDPXPEnAgJ5q5g"
     wordpress-db-name:
+      env: MYSQL_DATABASE
       type: string
       value: "wpdb"
     mysql-root-password:
+      env: MYSQL_ROOT_PASSWORD
       type: string
       value: "RhgDPXPEnAgJ5q5g"
     db-data-path:
@@ -42,15 +40,10 @@ web:
   containers:
     wordpress:
       image: docker.io/wordpress
-      environment:
-        - <- `WORDPRESS_DB_HOST=${wordpress-db-host}`
-        - <- `WORDPRESS_DB_PASSWORD=${wordpress-db-password}`
-        - <- `WORDPRESS_DB_NAME=${wordpress-db-name}`
-        - <- `WORDPRESS_DB_USER=${wordpress-db-user}`
       paths:
         - <- `${wordpress-data-path}:/var/www/html`                                     
       ports:
-        - 80
+        - 8089:80
         - 443
   depends:
     wait-for:
@@ -59,24 +52,20 @@ web:
       timeout: 30
   variables:
     wordpress-db-user:
+      env: WORDPRESS_DB_USER
       type: string
+      value: "value"
     wordpress-db-password:
+      env: WORDPRESS_DB_PASSWORD
       type: string
+      value: "value"
     wordpress-db-name:
+      env: WORDPRESS_DB_NAME
       type: string
     wordpress-db-host:
+      env: WORDPRESS_DB_HOST
       type: string
       value: <- get-hostname("wordpress/db", "mysql")
     wordpress-data-path:
       type: string
       value: <- `${monk-volume-path}/wordpress/web`
-
-stack:
-  defines: process-group
-  runnable-list:
-    - monk-wordpress/db
-    - monk-wordpress/web
-  variables:
-    wordpress-db-user: "db_user"
-    wordpress-db-password: "RhgDPXPEnAgJ5q5g"
-    wordpress-db-name: "wpdb"
