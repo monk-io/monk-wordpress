@@ -6,8 +6,7 @@ stack:
     - monk-wordpress/db
     - monk-wordpress/web
   variables:
-    wordpress-db-user: "db_user"
-    wordpress-db-password: "RhgDPXPEnAgJ5q5g"
-    wordpress-db-name: "wpdb"
-    mysql-root-password: "RhgDPXPEnAgJ5q5g"
-    db-data-path: <- `${monk-volume-path}/mysql/db`
+    mysql_user: "db_user"
+    mysql_root_password: "RhgDPXPEnAgJ5q5g"
+    mysql_database: "wpdb"
+    mysql_password: "RhgDPXPEnAgxxXYZ"
