@@ -1,21 +1,5 @@
 namespace: monk-wordpress
 
-group-variables:
-    wordpress-db-user: db_user
-    wordpress-db-password:
-      type: string
-      value: "RhgDPXPEnAgJ5q5g"
-    wordpress-db-name:
-      env: MYSQL_DATABASE
-      type: string
-      value: "wpdb"
-    mysql-root-password:
-      env: MYSQL_ROOT_PASSWORD
-      type: string
-      value: "RhgDPXPEnAgJ5q5g"
-    db-data-path:
-      type: string
-      value: <- `${monk-volume-path}/mysql/db`
 
 stack:
   defines: process-group
@@ -23,6 +7,7 @@ stack:
     - monk-wordpress/db
     - monk-wordpress/web
   variables:
-    inherits: ./group-variables
-
-    
+    mysql_user: "db_user"
+    mysql_root_password: "RhgDPXPEnAgJ5q5g"
+    mysql_database: "wpdb"
+    mysql_password: "RhgDPXPEnAgxxXYZ"

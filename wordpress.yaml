@@ -1,30 +1,28 @@
 namespace: monk-wordpress
 
 db:
+  defines: runnable
   inherits: mysql/latest
-  containers:
-    mysql:
-      image: mysql:8.0
-      environment:
-        - <- `MYSQL_USER=${wordpress-db-user}`
-      paths:
-        - <- `${db-data-path}:/var/lib/mysql`
-      ports:
-        - 3306
   variables:
-    wordpress-db-password:
-      env: MYSQL_PASSWORD
-    wordpress-db-name:
-      env: MYSQL_DATABASE
+    defines: variables
+    mysql_database:
       type: string
       value: "wpdb"
-    mysql-root-password:
-      env: MYSQL_ROOT_PASSWORD
+    rpc-port:
+      type: int
+      value: 3306
+    image-tag:
+      type: string
+      value: latest
+    mysql_user:
+      type: string
+      value: "db_user"
+    mysql_root_password:
       type: string
       value: "RhgDPXPEnAgJ5q5g"
-    db-data-path:
+    mysql_password:
       type: string
-      value: <- `${monk-volume-path}/mysql/db`
+      value: "RhgDPXPEnAgxxXYZ"
   checks:
     readiness:
       code: "true"
@@ -39,8 +37,7 @@ web:
       paths:
         - <- `${wordpress-data-path}:/var/www/html`                                     
       ports:
-        - 8089:80
-        - 443
+        - 0.0.0.0:80:80
   depends:
     wait-for:
       runnables:
