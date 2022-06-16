@@ -11,4 +11,4 @@ stack:
     mysql_root_password: "RhgDPXPEnAgJ5q5g"
     mysql_database: "wpdb"
     mysql_password: "RhgDPXPEnAgxxXYZ"
-    app-port: 80
+    rpc-port: 80

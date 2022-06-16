@@ -37,14 +37,14 @@ web:
       paths:
         - <- `${wordpress-data-path}:/var/www/html`                                     
       ports:
-        - <- `0.0.0.0:${app-port}:80`
+        - <- `0.0.0.0:${rpc-port}:80`
   depends:
     wait-for:
       runnables:
         - monk-wordpress/db
       timeout: 30
   variables:
-    app-port:
+    rpc-port:
       type: int
       value: 80
     wordpress-db-user:
