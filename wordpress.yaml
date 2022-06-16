@@ -6,17 +6,17 @@ db:
   variables:
     defines: variables
     mysql_database:
-      value: "wpdb"
       type: string
+      value: "wpdb"
     rpc-port:
       type: int
       value: 3306
     image-tag:
-      value: latest
       type: string
+      value: latest
     mysql_user:
-      value: user
-      type: "db_user"
+      type: string
+      value: "db_user"
     mysql_root_password:
       type: string
       value: "RhgDPXPEnAgJ5q5g"
