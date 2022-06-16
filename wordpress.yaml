@@ -37,7 +37,7 @@ web:
       paths:
         - <- `${wordpress-data-path}:/var/www/html`                                     
       ports:
-        - - <- `0.0.0.0:${wordpress-port}:8080`
+        - <- `0.0.0.0:${wordpress-port}:8080`
         - 443
   depends:
     wait-for:

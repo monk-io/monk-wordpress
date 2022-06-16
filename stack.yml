@@ -10,3 +10,4 @@ stack:
     mysql_root_password: "RhgDPXPEnAgJ5q5g"
     mysql_database: "wpdb"
     mysql_password: "RhgDPXPEnAgxxXYZ"
+    wordpress-port: 80
