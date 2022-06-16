@@ -1,6 +1,7 @@
 namespace: monk-wordpress
 
 db:
+  defines: runnable
   inherits: mysql/latest
   containers:
     mysql:
@@ -14,6 +15,8 @@ db:
   variables:
     wordpress-db-password:
       env: MYSQL_PASSWORD
+      type: string
+      value: "RhgDPXPEnAgJ5q5g"      
     wordpress-db-name:
       env: MYSQL_DATABASE
       type: string
@@ -39,7 +42,7 @@ web:
       paths:
         - <- `${wordpress-data-path}:/var/www/html`                                     
       ports:
-        - 8089:80
+        - 80:80
         - 443
   depends:
     wait-for:
