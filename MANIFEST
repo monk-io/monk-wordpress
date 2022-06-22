@@ -1,2 +1,2 @@
 REPO wordpress
-LOAD wordpress.yaml stack.yml
+LOAD wordpress.yml stack.yml
