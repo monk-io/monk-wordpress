@@ -38,37 +38,54 @@ db:
       image: mysql
 
 wordpress:
-    defines: runnable
-    containers:
-      wordpress:
-        image: wordpress
-        paths:
-          - <- `${wordpress-data-path}:/var/www/html`
-        ports:
-          - 8088:80
-          - 443
-    depends:
-      wait-for:
-        runnables:
-          - monk-wordpress/db
-        timeout: 30
-    variables:
-      wordpress-db-user:
-        type: string
-        env: WORDPRESS_DB_USER
-        value: <- $mysql_database_user
-      WORDPRESS_DB_PASSWORD:
-        env: WORDPRESS_DB_PASSWORD
-        type: string
-        value: <- $mysql_database_password
-      wordpress-db-name:
-        env: WORDPRESS_DB_NAME
-        type: string
-        value: <- $mysql_database_name
-      wordpress-db-host:
-        env: WORDPRESS_DB_HOST
+  defines: runnable
+  containers:
+    wordpress:
+      image: wordpress
+      paths:
+        - <- `${wordpress-data-path}:/var/www/html`
+      ports:
+        - 8088:80
+        - 443
+  depends:
+    wait-for:
+      runnables:
+        - monk-wordpress/db
+      timeout: 30
+  variables:
+    wordpress-db-user:
+      type: string
+      env: WORDPRESS_DB_USER
+      value: <- $mysql_database_user
+    WORDPRESS_DB_PASSWORD:
+      env: WORDPRESS_DB_PASSWORD
+      type: string
+      value: <- $mysql_database_password
+    wordpress-db-name:
+      env: WORDPRESS_DB_NAME
+      type: string
+      value: <- $mysql_database_name
+    wordpress-db-host:
+      env: WORDPRESS_DB_HOST
+      type: string
+      value: <- get-hostname("monk-wordpress/db", "mysql")
+    wordpress-data-path:
+      type: string
+      value: <- `${monk-volume-path}/wordpress/web`
+
+
+busy:
+  defines: runnable
+  containers:
+    test:
+      image: busybox
+      bash: echo "foo=$WORDPRESS_HOST" ; sleep 3600
+  variables: 
+    wordpress-host:
+      env: WORDPRESS_HOST
+      type: string
+      value: <- get-hostname("monk-wordpress/wordpress", "wordpress")
+    mysql-host:
+        env: MYSQL_HOST
         type: string
         value: <- get-hostname("monk-wordpress/db", "mysql")
-      wordpress-data-path:
-        type: string
-        value: <- `${monk-volume-path}/wordpress/web`
