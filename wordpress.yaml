@@ -1,64 +1,82 @@
 namespace: monk-wordpress
 
-db:
+db: 
   defines: runnable
-  inherits: mysql/latest
   variables:
-    defines: variables
-    mysql_database:
-      type: string
-      value: "wpdb"
-    rpc-port:
-      type: int
-      value: 3306
     image-tag:
       type: string
       value: latest
-    mysql_user:
+    rpc-port:
+      type: int
+      value: 3306
+    database_name:
       type: string
-      value: "db_user"
-    mysql_root_password:
+      env: MYSQL_DATABASE
+      value: <- $mysql_database_name
+    database_user:
+      env: MYSQL_USER
       type: string
-      value: "RhgDPXPEnAgJ5q5g"
-    mysql_password:
+      value: <- $mysql_database_user
+    mpassword: 
+      env: MYSQL_PASSWORD
       type: string
-      value: "RhgDPXPEnAgxxXYZ"
-  checks:
-    readiness:
-      code: "true"
-      period: 15
-      initialDelay: 10
+      value: <- $mysql_database_password
+    database_root_password:
+      env: MYSQL_ROOT_PASSWORD
+      value: <- $mysql_database_root_password
+      type: string
+    wordpress_mysql_data:
+      type: string
+      value: wordpress-mysql
+  containers:
+    mysql:
+      paths:
+        - <- `${monk-volume-path}/${wordpress_mysql_data}:/var/lib/mysql`
+      ports:
+        - <- `0.0.0.0:${rpc-port}:3306`
+      image-tag: <- `${image-tag}`
+      image: docker.io/library/mysql
 
-web:
+wordpress:
+    defines: runnable
+    containers:
+      wordpress:
+        image: wordpress
+        paths:
+          - <- `${wordpress-data-path}:/var/www/html`
+        ports:
+          - 8088:80
+          - 443
+    depends:
+      wait-for:
+        runnables:
+          - monk-wordpress/db
+        timeout: 30
+    variables:
+      wordpress-db-user:
+        type: string
+        env: WORDPRESS_DB_USER
+        value: <- $mysql_database_user
+      WORDPRESS_DB_PASSWORD:
+        env: WORDPRESS_DB_PASSWORD
+        type: string
+        value: <- $mysql_database_password
+      wordpress-db-name:
+        env: WORDPRESS_DB_NAME
+        type: string
+        value: <- $mysql_database_name
+      wordpress-db-host:
+        env: WORDPRESS_DB_HOST
+        type: string
+        value: <- get-hostname("monk-wordpress/db", "mysql")
+      wordpress-data-path:
+        type: string
+        value: <- `${monk-volume-path}/wordpress/web`
+busy:
   defines: runnable
   containers:
-    wordpress:
-      image: docker.io/wordpress
-      paths:
-        - <- `${wordpress-data-path}:/var/www/html`                                     
-      ports:
-        - 0.0.0.0:80:80
-  depends:
-    wait-for:
-      runnables:
-        - monk-wordpress/db
-      timeout: 30
-  variables:
-    wordpress-db-user:
-      env: WORDPRESS_DB_USER
-      type: string
-      value: "value"
-    wordpress-db-password:
-      env: WORDPRESS_DB_PASSWORD
-      type: string
-      value: "value"
-    wordpress-db-name:
-      env: WORDPRESS_DB_NAME
-      type: string
-    wordpress-db-host:
-      env: WORDPRESS_DB_HOST
-      type: string
-      value: <- get-hostname("wordpress/db", "mysql")
-    wordpress-data-path:
-      type: string
-      value: <- `${monk-volume-path}/wordpress/web`
+    foo:
+      image: busybox
+      environment:
+        - <- `FOO=get-hostname("monk-wordpress/db", "mysql")`
+      bash: echo "foo=$FOO" ; sleep 3600
