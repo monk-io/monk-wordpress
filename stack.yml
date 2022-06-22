@@ -5,7 +5,6 @@ stack:
   runnable-list:
     - monk-wordpress/db
     - monk-wordpress/wordpress
-    - monk-wordpress/busy
   variables:
     mysql_database_user: "db_user"
     mysql_database_root_password: "RhgDPXPEnAgJ5q5g"

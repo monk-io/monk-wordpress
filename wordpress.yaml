@@ -35,7 +35,7 @@ db:
       ports:
         - <- `0.0.0.0:${rpc-port}:3306`
       image-tag: <- `${image-tag}`
-      image: docker.io/library/mysql
+      image: mysql
 
 wordpress:
     defines: runnable
@@ -72,11 +72,3 @@ wordpress:
       wordpress-data-path:
         type: string
         value: <- `${monk-volume-path}/wordpress/web`
-busy:
-  defines: runnable
-  containers:
-    foo:
-      image: busybox
-      environment:
-        - <- `FOO=get-hostname("monk-wordpress/db", "mysql")`
-      bash: echo "foo=$FOO" ; sleep 3600
