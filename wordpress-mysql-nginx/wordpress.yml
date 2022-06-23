@@ -1,0 +1,132 @@
+namespace: monk-wordpress-nginx
+
+db: 
+  defines: runnable
+  variables:
+    image-tag:
+      type: string
+      value: latest
+    rpc-port:
+      type: int
+      value: 3306
+    database_name:
+      type: string
+      env: MYSQL_DATABASE
+      value: <- $mysql_database_name
+    database_user:
+      env: MYSQL_USER
+      type: string
+      value: <- $mysql_database_user
+    mpassword: 
+      env: MYSQL_PASSWORD
+      type: string
+      value: <- $mysql_database_password
+    database_root_password:
+      env: MYSQL_ROOT_PASSWORD
+      value: <- $mysql_database_root_password
+      type: string
+    wordpress_mysql_data:
+      type: string
+      value: wordpress-mysql
+  containers:
+    mysql:
+      paths:
+        - <- `${monk-volume-path}/${wordpress_mysql_data}:/var/lib/mysql`
+      ports:
+        - <- `0.0.0.0:${rpc-port}:3306`
+      image-tag: <- `${image-tag}`
+      image: mysql
+
+wordpress:
+  defines: runnable
+  containers:
+    wordpress:
+      image: wordpress
+      paths:
+        - <- `${wordpress-data-path}:/var/www/html`
+      ports:
+        - 8088:80
+        - 443
+  depends:
+    wait-for:
+      runnables:
+        - monk-wordpress-nginx/db
+      timeout: 30
+  variables:
+    wordpress-db-user:
+      type: string
+      env: WORDPRESS_DB_USER
+      value: <- $mysql_database_user
+    WORDPRESS_DB_PASSWORD:
+      env: WORDPRESS_DB_PASSWORD
+      type: string
+      value: <- $mysql_database_password
+    wordpress-db-name:
+      env: WORDPRESS_DB_NAME
+      type: string
+      value: <- $mysql_database_name
+    wordpress-db-host:
+      env: WORDPRESS_DB_HOST
+      type: string
+      value: <- get-hostname("monk-wordpress-nginx/db", "mysql") split(".dns.podman") join("")
+    wordpress-data-path:
+      type: string
+      value: <- `${monk-volume-path}/wordpress/web`
+
+
+nginx:
+  defines: runnable
+  inherits: nginx
+  files:
+    server-def:
+      contents: |
+        server {
+          listen 0.0.0.0:{{ v "listen-port" }};
+          server_name {{ v "server-name" }};
+          location / {
+            proxy_set_header X-Real-IP  $remote_addr;
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Host $host;
+            proxy_pass http://{{ v "proxy-target-host" }}:{{ v "proxy-target-port" }};
+          }
+        }
+      mode: 511
+      path: /opt/bitnami/nginx/conf/server_blocks/reverse_proxy.conf
+      container: nginx-reverse-proxy
+  containers:
+    defines: containers
+    nginx-reverse-proxy:
+      image-tag: latest
+      image: docker.io/bitnami/nginx
+      ports:
+      - <- `0.0.0.0:${listen-port}:${listen-port}/tcp`
+  variables:
+    proxy-target-host:
+      value: <- get-hostname("monk-wordpress-nginx/wordpress", "wordpress") split(".dns.podman") join("")
+      type: string
+    listen-port:
+      value: "80"
+      type: string
+    server-name:
+      value: wordpress.monk.io
+      type: string
+    proxy-target-port:
+      type: string
+      value: "80"
+
+busy:
+  defines: runnable
+  containers:
+    test:
+      image: busybox
+      bash: echo "foo=$WORDPRESS_HOST" ; sleep 3600
+  variables: 
+    wordpress-host:
+      env: WORDPRESS_HOST
+      type: string
+      value: <- get-hostname("monk-wordpress-nginx/wordpress", "wordpress") split(".dns.podman") join("")
+    mysql-host:
+        env: MYSQL_HOST
+        type: string
+        value: <- get-hostname("monk-wordpress-nginx/db", "mysql")

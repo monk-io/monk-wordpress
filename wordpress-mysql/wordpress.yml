@@ -68,7 +68,7 @@ wordpress:
     wordpress-db-host:
       env: WORDPRESS_DB_HOST
       type: string
-      value: <- get-hostname("monk-wordpress/db", "mysql")
+      value: <- get-hostname("monk-wordpress/db", "mysql") split(".dns.podman") join("")
     wordpress-data-path:
       type: string
       value: <- `${monk-volume-path}/wordpress/web`
@@ -84,7 +84,7 @@ busy:
     wordpress-host:
       env: WORDPRESS_HOST
       type: string
-      value: <- get-hostname("monk-wordpress/wordpress", "wordpress")
+      value: <- get-hostname("monk-wordpress/wordpress", "wordpress") split(".dns.podman") join("")
     mysql-host:
         env: MYSQL_HOST
         type: string
