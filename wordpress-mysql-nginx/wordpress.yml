@@ -1,5 +1,4 @@
-namespace: monk-wordpress-nginx
-
+namespace: monk-wordpress-nginx-ssl
 db: 
   defines: runnable
   variables:
@@ -109,7 +108,7 @@ nginx:
       value: "80"
       type: string
     server-name:
-      value: wordpress.monk.io
+      value: <- $server_name
       type: string
     proxy-target-port:
       type: string

@@ -14,3 +14,4 @@ stack:
       type: string
       value: "RhgDPXPEnAgxxXYZ"
     server_name: wordpress.burakhan.com
+    email: burakhan@burakhan.com
