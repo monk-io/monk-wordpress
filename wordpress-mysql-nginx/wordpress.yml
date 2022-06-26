@@ -1,4 +1,4 @@
-namespace: monk-wordpress-nginx-ssl
+namespace: monk-wordpress-nginx
 db: 
   defines: runnable
   variables:
