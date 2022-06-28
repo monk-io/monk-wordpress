@@ -4,7 +4,7 @@ db:
   variables:
     image-tag:
       type: string
-      value: latest
+      value: <- $mysql-image-tag
     rpc-port:
       type: int
       value: 3306
