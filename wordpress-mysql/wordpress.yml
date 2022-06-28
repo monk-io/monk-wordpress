@@ -45,7 +45,7 @@ wordpress:
       paths:
         - <- `${wordpress-data-path}:/var/www/html`
       ports:
-        - 8088:80
+        - <- `${serve-port}:80``
         - 443
   depends:
     wait-for:
@@ -72,3 +72,6 @@ wordpress:
     wordpress-data-path:
       type: string
       value: <- `${monk-volume-path}/wordpress/web`
+    serve-port:
+      type: int
+      value: <- $wordpress_port

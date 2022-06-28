@@ -33,7 +33,6 @@ foo@bar:~$ monk list monk-wordpress
 ✔ Got the list
 Type      Template                         Repository            Version      Tags
 ___________________________________________________________________________________
-runnable  monk-wordpress/busy              local                 -            -
 runnable  monk-wordpress/db                local                 -            -
 group     monk-wordpress/stack             local                 -            -
 runnable  monk-wordpress/wordpress         local                 -            -
@@ -91,6 +90,7 @@ The variables are in `stack.yml` file. You can quickly setup by editing the valu
 | server_name                  	| The domain name you want to run           	|
 | mysql-image-tag              	| The mysql version you want to use         	|
 | mysql_database_name          	| Database name that wordpress will use     	|
+| wordpress_port          	      | Serve wordpress port     	|
 
 
 ## 
