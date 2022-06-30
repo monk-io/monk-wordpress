@@ -113,19 +113,3 @@ nginx:
     proxy-target-port:
       type: string
       value: "80"
-
-busy:
-  defines: runnable
-  containers:
-    test:
-      image: busybox
-      bash: echo "foo=$WORDPRESS_HOST" ; sleep 3600
-  variables: 
-    wordpress-host:
-      env: WORDPRESS_HOST
-      type: string
-      value: <- get-hostname("monk-wordpress-nginx/wordpress", "wordpress") split(".dns.podman") join("")
-    mysql-host:
-        env: MYSQL_HOST
-        type: string
-        value: <- get-hostname("monk-wordpress-nginx/db", "mysql")

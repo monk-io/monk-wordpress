@@ -84,7 +84,7 @@ nginx:
       environment:
       - <- `DOMAIN=${server-name}`
       - <- `ENABLE_SSL=${ssl}`
-      - <- `EMAIL=${email}`
+      - <- `EMAIL=${admin-email}`
       paths:
       - <- `${moncc-volume-path}/nginx/certificates:/usr/share/nginx/certificates`
       - <- `${moncc-volume-path}/nginx/certbot:/var/www/certbot`
@@ -101,7 +101,7 @@ nginx:
     proxy-pass-url:
       value: <- get-hostname("monk-wordpress-nginx-ssl/wordpress", "wordpress") split(".dns.podman") join("")
       type: string
-    email:
+    admin-email:
       value: <- $email
       type: string
     ssl:
