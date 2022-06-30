@@ -103,32 +103,7 @@ The variables are in `stack.yml` file. You can quickly setup by editing the valu
 ## Stop, remove and clean up workloads and templates
 
 ```bash
-monk purge -x monk-wordpress/stack monk-wordpress/db monk-wordpress/wordpress
+monk purge -x monk-wordpress/stack monk-wordpress/db monk-wordpress/wordpress monk-wordpress/nginx
 ```
 
 ```
-
-
-## Variables
-The variables are in `stack.yml` file. You can quickly setup by editing the values here.
-
-| Variable                     	| Description                               	|
-|------------------------------	|-------------------------------------------	|
-| mysql_database_user          	| Database username that wordpress will use 	|
-| mysql_database_root_password 	| Database authorized user password         	|
-| mysql_database_password      	| Database password that wordpress will use 	|
-| server_name                  	| The domain name you want to run           	|
-| mysql-image-tag              	| The mysql version you want to use         	|
-| mysql_database_name          	| Database name that wordpress will use     	|
-
-
-If you have forwarded the domain to the server, you can access it directly from the domain name.
-
-http://wordpress.burakhan.com
-
-## Stop, remove and clean up workloads and templates
-
-```bash
-monk purge -x monk-wordpress-nginx/stack monk-wordpress-nginx/db monk-wordpress-nginx/wordpress monk-wordpress-nginx/nginx
-```
-
