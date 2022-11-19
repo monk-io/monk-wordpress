@@ -16,6 +16,7 @@ not connected to cluster
 ```
 
 ## Check cluster nodes
+foo@bar:~$ monk cluster peers
 ✔ Got the list of peers
 ID                                              Name   Tag  Provider  Containers  IP           Uptime   Active  Version  Pressure
 QmXiEXRNs5tSjKcYvZcX4Z71qBEs2rZeiUEYaM8wLrKHME  local       unknown   0           127.0.0.1    28m 26s  true    v3.4.3   false
@@ -28,7 +29,7 @@ For SSL verification, we first need to redirect the domain we will use for wordp
 
 ## Clone Repository
 ```bash
-git clone https://github.com/Burakhan/monk-wordpress
+git clone https://github.com/monk-io/monk-wordpress
 ```
 
 ## Load Template
