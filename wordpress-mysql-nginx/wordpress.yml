@@ -4,7 +4,7 @@ db:
   variables:
     image-tag:
       type: string
-      value: <- $mysql-image-tag
+      value: latest
     rpc-port:
       type: int
       value: 3306
@@ -35,17 +35,25 @@ db:
         - <- `0.0.0.0:${rpc-port}:3306`
       image-tag: <- `${image-tag}`
       image: mysql
+  services:
+    mysql-svc:
+      container: mysql
+      port: 3306
+      protocol: tcp
 
 wordpress:
   defines: runnable
+  connections:
+    db:
+      runnable: monk-wordpress-nginx/db
+      service: mysql-svc
   containers:
-    wordpress:
+    wp:
       image: wordpress
       paths:
         - <- `${wordpress-data-path}:/var/www/html`
       ports:
-        - 8088:80
-        - 443
+        - <- `${server-port}:80`
   depends:
     wait-for:
       runnables:
@@ -67,14 +75,27 @@ wordpress:
     wordpress-db-host:
       env: WORDPRESS_DB_HOST
       type: string
-      value: <- get-hostname("monk-wordpress-nginx/db", "mysql") split(".dns.podman") join("")
+      value: <- connection-hostname("db") split(".dns.podman") join("")
     wordpress-data-path:
       type: string
       value: <- `${monk-volume-path}/wordpress/web`
+    server-port:
+      type: int
+      value: <- $wordpress_port
+  services:
+    wordpress-svc:
+      container: wp
+      port: 80
+      protocol: tcp
+      host-port: <- `${server-port}` to-i
 
 
 nginx:
   defines: runnable
+  connections:
+    wordpress:
+      runnable: monk-wordpress-nginx/wordpress
+      service: wordpress-svc
   inherits: nginx
   files:
     server-def:
@@ -102,7 +123,7 @@ nginx:
       - <- `0.0.0.0:${listen-port}:${listen-port}/tcp`
   variables:
     proxy-target-host:
-      value: <- get-hostname("monk-wordpress-nginx/wordpress", "wordpress") split(".dns.podman") join("")
+      value: <- connection-hostname("wordpress") split(".dns.podman") join("")
       type: string
     listen-port:
       value: "80"
@@ -112,4 +133,10 @@ nginx:
       type: string
     proxy-target-port:
       type: string
-      value: "80"
+      value: 80
+  services:
+    nginx-svc:
+      container: nginx-reverse-proxy
+      port: <- `${listen-port}`
+      protocol: tcp
+      host-port: <- `${listen-port}` to-i

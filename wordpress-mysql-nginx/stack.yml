@@ -5,7 +5,6 @@ stack:
     - monk-wordpress-nginx/db
     - monk-wordpress-nginx/wordpress
     - monk-wordpress-nginx/nginx
-    - monk-wordpress-nginx/busy
   variables:
     mysql_database_user: "db_user"
     mysql_database_root_password: "RhgDPXPEnAgJ5q5g"
@@ -13,5 +12,6 @@ stack:
     mysql_database_password: 
       type: string
       value: "RhgDPXPEnAgxxXYZ"
+    wordpress_port: 8088
     server_name: wordpress.burakhan.com
     mysql-image-tag: 5.6.47

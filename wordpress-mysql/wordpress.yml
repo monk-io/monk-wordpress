@@ -36,17 +36,25 @@ db:
         - <- `0.0.0.0:${rpc-port}:3306`
       image-tag: <- `${image-tag}`
       image: mysql
+  services:
+    mysql-svc:
+      container: mysql
+      port: 3306
+      protocol: tcp
 
 wordpress:
   defines: runnable
+  connections:
+    db:
+      runnable: monk-wordpress/db
+      service: mysql-svc
   containers:
     wordpress:
       image: wordpress
       paths:
         - <- `${wordpress-data-path}:/var/www/html`
       ports:
-        - <- `${serve-port}:80``
-        - 443
+        - <- `${server-port}:80`
   depends:
     wait-for:
       runnables:
@@ -68,10 +76,16 @@ wordpress:
     wordpress-db-host:
       env: WORDPRESS_DB_HOST
       type: string
-      value: <- get-hostname("monk-wordpress/db", "mysql") split(".dns.podman") join("")
+      value: <- connection-hostname("db") split(".dns.podman") join("")
     wordpress-data-path:
       type: string
       value: <- `${monk-volume-path}/wordpress/web`
-    serve-port:
+    server-port:
       type: int
       value: <- $wordpress_port
+  services:
+    wordpress-svc:
+      container: wordpress
+      port: 80
+      protocol: tcp
+      host-port: <- `${server-port}`
