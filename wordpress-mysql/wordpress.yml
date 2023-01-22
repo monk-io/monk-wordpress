@@ -1,7 +1,8 @@
 namespace: monk-wordpress
 
-db: 
+db:
   defines: runnable
+
   variables:
     image-tag:
       type: string
@@ -17,7 +18,7 @@ db:
       env: MYSQL_USER
       type: string
       value: <- $mysql_database_user
-    mpassword: 
+    mpassword:
       env: MYSQL_PASSWORD
       type: string
       value: <- $mysql_database_password
@@ -28,6 +29,7 @@ db:
     wordpress_mysql_data:
       type: string
       value: wordpress-mysql
+
   containers:
     mysql:
       paths:
@@ -36,6 +38,7 @@ db:
         - <- `0.0.0.0:${rpc-port}:3306`
       image-tag: <- `${image-tag}`
       image: mysql
+
   services:
     mysql-svc:
       container: mysql
@@ -44,10 +47,12 @@ db:
 
 wordpress:
   defines: runnable
+
   connections:
     db:
       runnable: monk-wordpress/db
       service: mysql-svc
+
   containers:
     wordpress:
       image: wordpress
@@ -55,11 +60,13 @@ wordpress:
         - <- `${wordpress-data-path}:/var/www/html`
       ports:
         - <- `${server-port}:80`
+
   depends:
     wait-for:
       runnables:
         - monk-wordpress/db
       timeout: 30
+
   variables:
     wordpress-db-user:
       type: string
@@ -83,6 +90,7 @@ wordpress:
     server-port:
       type: int
       value: <- $wordpress_port
+
   services:
     wordpress-svc:
       container: wordpress
