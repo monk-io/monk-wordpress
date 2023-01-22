@@ -1,13 +1,16 @@
 # Wordpress & Monk
+
 This repository contains Monk.io template to deploy Wordpress system either locally or on cloud of your choice (AWS, GCP, Azure, Digital Ocean).
 
-# Prerequisites
+## Prerequisites
+
 - [Install Monk](https://docs.monk.io/docs/get-monk)
 - [Register and Login Monk](https://docs.monk.io/docs/acc-and-auth)
 - [Add Cloud Provider](https://docs.monk.io/docs/cloud-provider)
 - [Add Instance](https://docs.monk.io/docs/multi-cloud)
 
-#### Make sure monkd is running.
+## Make sure monkd is running
+
 ```bash
 foo@bar:~$ monk status
 daemon: ready
@@ -16,18 +19,20 @@ not connected to cluster
 ```
 
 ## Clone Repository
+
 ```bash
 git clone https://github.com/monk-io/monk-wordpress
 ```
 
 ## Load Template
+
 ```bash
 cd wordpress-mysql
 monk load MANIFEST
 ```
 
+## Let's take a look at the themes I have installed
 
-#### Let's take a look at the themes I have installed.
 ```bash
 foo@bar:~$ monk list monk-wordpress
 ✔ Got the list
@@ -40,8 +45,9 @@ runnable  monk-wordpress/wordpress         local                 -            -
 ```
 
 ## Deploy Stack
+
 ```bash
-foo@bar:~$ monk run monk-wordpress/stack 
+foo@bar:~$ monk run monk-wordpress/stack
 ? Select tag to run [monk-wordpress/stack] on: wp
 ✔ Starting the job: monk-wordpress/stack... DONE
 ✔ Preparing nodes DONE
@@ -72,28 +78,25 @@ foo@bar:~$ monk run monk-wordpress/stack
           └─🔌 open 34.146.77.2:443 -> 443
 
 💡 You can inspect and manage your above stack with these commands:
-	monk logs (-f) monk-wordpress/stack - Inspect logs
-	monk shell     monk-wordpress/stack - Connect to the container's shell
-	monk do        monk-wordpress/stack/action_name - Run defined action (if exists)
+ monk logs (-f) monk-wordpress/stack - Inspect logs
+ monk shell     monk-wordpress/stack - Connect to the container's shell
+ monk do        monk-wordpress/stack/action_name - Run defined action (if exists)
 💡 Check monk help for more!
 ```
 
-
 ## Variables
+
 The variables are in `stack.yml` file. You can quickly setup by editing the values here.
 
-| Variable                     	| Description                               	|
-|------------------------------	|-------------------------------------------	|
-| mysql_database_user          	| Database username that wordpress will use 	|
-| mysql_database_root_password 	| Database authorized user password         	|
-| mysql_database_password      	| Database password that wordpress will use 	|
-| server_name                  	| The domain name you want to run           	|
-| mysql-image-tag              	| The mysql version you want to use         	|
-| mysql_database_name          	| Database name that wordpress will use     	|
-| wordpress_port          	      | Serve wordpress port     	|
-
-
-## 
+| Variable                      | Description                                |
+|------------------------------ |------------------------------------------- |
+| mysql_database_user           | Database username that wordpress will use  |
+| mysql_database_root_password  | Database authorized user password          |
+| mysql_database_password       | Database password that wordpress will use  |
+| server_name                   | The domain name you want to run            |
+| mysql-image-tag               | The mysql version you want to use          |
+| mysql_database_name           | Database name that wordpress will use      |
+| wordpress_port                | Serve wordpress port                       |
 
 ## Stop, remove and clean up workloads and templates
 

@@ -9,7 +9,7 @@ stack:
     mysql_database_user: "db_user"
     mysql_database_root_password: "RhgDPXPEnAgJ5q5g"
     mysql_database_name: "wpdb"
-    mysql_database_password: 
+    mysql_database_password:
       type: string
       value: "RhgDPXPEnAgxxXYZ"
     wordpress_port: 8088

@@ -1,6 +1,8 @@
 namespace: monk-wordpress-nginx-ssl
-db: 
+
+db:
   defines: runnable
+
   variables:
     image-tag:
       type: string
@@ -16,7 +18,7 @@ db:
       env: MYSQL_USER
       type: string
       value: <- $mysql_database_user
-    mpassword: 
+    mpassword:
       env: MYSQL_PASSWORD
       type: string
       value: <- $mysql_database_password
@@ -27,6 +29,7 @@ db:
     wordpress_mysql_data:
       type: string
       value: wordpress-mysql
+
   containers:
     mysql:
       paths:
@@ -38,6 +41,7 @@ db:
 
 wordpress:
   defines: runnable
+
   containers:
     wordpress:
       image: wordpress
@@ -46,11 +50,13 @@ wordpress:
       ports:
         - 8088:80
         - 443
+
   depends:
     wait-for:
       runnables:
         - monk-wordpress-nginx-ssl/db
       timeout: 30
+
   variables:
     wordpress-db-user:
       type: string
@@ -72,9 +78,9 @@ wordpress:
       type: string
       value: <- `${monk-volume-path}/wordpress/web`
 
-
 nginx:
   defines: runnable
+
   containers:
     defines: containers
     nginx:
@@ -90,8 +96,8 @@ nginx:
       - <- `${moncc-volume-path}/nginx/certbot:/var/www/certbot`
       image-tag: 1.15-alpine
       image: docker.io/whitenoi5/nginx-rev-proxy-ssl
+
   variables:
-    defines: variables
     proxy-pass-protocol:
       type: string
       value: http
@@ -110,21 +116,21 @@ nginx:
     server-name:
       type: string
       value: <- $server_name
+
   files:
-    defines: files
     server-def:
       mode: 511
-      contents: | 
+      contents: |
         server {
           listen 80;
           server_name {{ v "server-name" }} www.{{ v "server-name" }};
-          {{ if v "ssl" }} 
-            location /.well-known/acme-challenge/ { 
+          {{ if v "ssl" }}
+            location /.well-known/acme-challenge/ {
               root /var/www/certbot;
             }
           {{ end }}
           location / {
-          {{ if v "ssl" }} 
+          {{ if v "ssl" }}
             return 301 https://{{ v "server-name" }}$request_uri;
           {{ else }}
             proxy_pass {{ v "proxy-pass-protocol" }}://{{ v "proxy-pass-url"}}:{{ v "proxy-pass-port" }};
@@ -139,7 +145,7 @@ nginx:
           {{ end }}
           }
         }
-        
+
         {{ if v "ssl" }}
         server {
           listen 443 ssl;
@@ -157,7 +163,7 @@ nginx:
             proxy_set_header X-Forwarded-Server $host;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto https;
-            proxy_set_header X-Real-IP $remote_addr; 
+            proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header Host $host;
           }
         }
