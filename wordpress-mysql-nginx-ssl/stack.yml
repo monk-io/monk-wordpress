@@ -1,12 +1,12 @@
-namespace: monk-wordpress-nginx-ssl
+namespace: wordpress-nginx-ssl
 
 stack:
   defines: process-group
 
   runnable-list:
-    - monk-wordpress-nginx-ssl/db
-    - monk-wordpress-nginx-ssl/wordpress
-    - monk-wordpress-nginx-ssl/nginx
+    - wordpress-nginx-ssl/db
+    - wordpress-nginx-ssl/wordpress
+    - wordpress-nginx-ssl/nginx
 
   variables:
     mysql_database_user: "db_user"
@@ -15,5 +15,5 @@ stack:
     mysql_database_password:
       type: string
       value: "RhgDPXPEnAgxxXYZ"
-    server_name: wordpress.burakhan.com
-    email: burakhan@burakhan.com
+    server_name: wordpress.monk.io
+    email: tech@monk.io

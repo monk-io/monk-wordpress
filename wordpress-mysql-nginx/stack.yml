@@ -1,10 +1,10 @@
-namespace: monk-wordpress-nginx
+namespace: wordpress-mysql-nginx
 stack:
   defines: process-group
   runnable-list:
-    - monk-wordpress-nginx/db
-    - monk-wordpress-nginx/wordpress
-    - monk-wordpress-nginx/nginx
+    - wordpress-mysql-nginx/db
+    - wordpress-mysql-nginx/wordpress
+    - wordpress-mysql-nginx/nginx
   variables:
     mysql_database_user: "db_user"
     mysql_database_root_password: "RhgDPXPEnAgJ5q5g"

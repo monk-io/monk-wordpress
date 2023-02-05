@@ -1,6 +1,7 @@
-namespace: monk-wordpress-nginx
 
-db:
+namespace: wordpress-mysql-nginx
+
+db: 
   defines: runnable
 
   variables:
@@ -50,7 +51,7 @@ wordpress:
 
   connections:
     db:
-      runnable: monk-wordpress-nginx/db
+      runnable: wordpress-mysql-nginx/db
       service: mysql-svc
 
   containers:
@@ -64,7 +65,7 @@ wordpress:
   depends:
     wait-for:
       runnables:
-        - monk-wordpress-nginx/db
+        - wordpress-mysql-nginx/db
       timeout: 30
 
   variables:
@@ -105,7 +106,7 @@ nginx:
 
   connections:
     wordpress:
-      runnable: monk-wordpress-nginx/wordpress
+      runnable: wordpress-mysql-nginx/wordpress
       service: wordpress-svc
 
   files:

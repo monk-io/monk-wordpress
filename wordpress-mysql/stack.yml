@@ -1,10 +1,10 @@
-namespace: monk-wordpress
+namespace: wordpress-mysql
 
 stack:
   defines: process-group
   runnable-list:
-    - monk-wordpress/db
-    - monk-wordpress/wordpress
+    - wordpress-mysql/db
+    - wordpress-mysql/wordpress
   variables:
     mysql_database_user: "db_user"
     mysql_database_root_password: "RhgDPXPEnAgJ5q5g"
