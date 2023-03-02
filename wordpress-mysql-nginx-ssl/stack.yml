@@ -15,5 +15,5 @@ stack:
     mysql_database_password:
       type: string
       value: "RhgDPXPEnAgxxXYZ"
-    server_name: wordpress.monk.io
-    email: tech@monk.io
+    server_name: wordpress.burakhan.com
+    email: tech@burakhan.com

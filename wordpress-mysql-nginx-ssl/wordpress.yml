@@ -38,12 +38,22 @@ db:
         - <- `0.0.0.0:${rpc-port}:3306`
       image-tag: <- `${image-tag}`
       image: mysql
+  services:
+    mysql-svc:
+      container: mysql
+      port: 3306
+      protocol: tcp
 
 wordpress:
   defines: runnable
 
+  connections:
+    db:
+      runnable: wordpress-mysql-nginx/db
+      service: mysql-svc
+
   containers:
-    wordpress:
+    wp:
       image: wordpress
       paths:
         - <- `${wordpress-data-path}:/var/www/html`
@@ -73,29 +83,26 @@ wordpress:
     wordpress-db-host:
       env: WORDPRESS_DB_HOST
       type: string
-      value: <- get-hostname("wordpress-nginx-ssl/db", "mysql") split(".dns.podman") join("")
+      value: <- connection-hostname("db") split(".dns.podman") join("")
     wordpress-data-path:
       type: string
       value: <- `${monk-volume-path}/wordpress/web`
+  
+  services:
+    wordpress-svc:
+      container: wp
+      port: 80
+      protocol: tcp
+      host-port: 8088
 
-nginx:
+wp-nginx:
   defines: runnable
+  inherits: nginx/ssl
 
-  containers:
-    defines: containers
-    nginx:
-      ports:
-      - 0.0.0.0:80:80/tcp
-      - 0.0.0.0:443:443/tcp
-      environment:
-      - <- `DOMAIN=${server-name}`
-      - <- `ENABLE_SSL=${ssl}`
-      - <- `EMAIL=${admin-email}`
-      paths:
-      - <- `${moncc-volume-path}/nginx/certificates:/usr/share/nginx/certificates`
-      - <- `${moncc-volume-path}/nginx/certbot:/var/www/certbot`
-      image-tag: 1.15-alpine
-      image: docker.io/whitenoi5/nginx-rev-proxy-ssl
+  connections:
+    wordpress:
+      runnable: wordpress-mysql-nginx/wordpress
+      service: wordpress-svc
 
   variables:
     proxy-pass-protocol:
@@ -105,17 +112,24 @@ nginx:
       value: 80
       type: int
     proxy-pass-url:
-      value: <- get-hostname("wordpress-nginx-ssl/wordpress", "wordpress") split(".dns.podman") join("")
+      value: <- connection-hostname("wordpress") split(".dns.podman") join("")
       type: string
     admin-email:
       value: <- $email
       type: string
     ssl:
+      env: USE_CERTBOT
       type: bool
       value: true
     server-name:
       type: string
       value: <- $server_name
+    email:
+      type: string
+      value: do-not-reply@burakhan.com
+    domain:
+      type: string
+      value: wordpress.burakhan.com
 
   files:
     server-def:
@@ -148,13 +162,16 @@ nginx:
 
         {{ if v "ssl" }}
         server {
-          listen 443 ssl;
-          server_name {{ v "server-name" }} www.{{ v "server-name" }};
-          ssl_certificate /usr/share/nginx/certificates/fullchain.pem;
-          ssl_certificate_key /usr/share/nginx/certificates/privkey.pem;
-          include /etc/ssl-options/options-nginx-ssl.conf;
-          ssl_dhparam /etc/ssl-options/ssl-dhparams.pem;
+          listen 443 ssl http2;
 
+          ssl_certificate     /etc/letsencrypt/live/{{ v "domain" }}/fullchain.pem;
+          ssl_certificate_key /etc/letsencrypt/live/{{ v "domain" }}/privkey.pem;
+          server_name {{ v "domain" }};
+
+          root /usr/share/nginx/html/;
+          index index.php index.html index.htm;
+
+ 
           location / {
             proxy_pass {{ v "proxy-pass-protocol" }}://{{ v "proxy-pass-url" }}:{{ v "proxy-pass-port" }};
             proxy_pass_request_headers on;

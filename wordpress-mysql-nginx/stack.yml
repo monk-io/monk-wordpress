@@ -4,7 +4,7 @@ stack:
   runnable-list:
     - wordpress-mysql-nginx/db
     - wordpress-mysql-nginx/wordpress
-    - wordpress-mysql-nginx/nginx
+    - wordpress-mysql-nginx/wp-nginx
   variables:
     mysql_database_user: "db_user"
     mysql_database_root_password: "RhgDPXPEnAgJ5q5g"

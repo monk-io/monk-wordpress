@@ -100,15 +100,13 @@ wordpress:
       host-port: <- `${server-port}` to-i
 
 
-nginx:
+wp-nginx:
   defines: runnable
-  inherits: nginx
-
+  inherits: nginx/basic
   connections:
     wordpress:
       runnable: wordpress-mysql-nginx/wordpress
       service: wordpress-svc
-
   files:
     server-def:
       contents: |
@@ -124,15 +122,8 @@ nginx:
           }
         }
       mode: 511
-      path: /opt/bitnami/nginx/conf/server_blocks/reverse_proxy.conf
-      container: nginx-reverse-proxy
-
-  containers:
-    nginx-reverse-proxy:
-      image-tag: latest
-      image: docker.io/bitnami/nginx
-      ports:
-      - <- `0.0.0.0:${listen-port}:${listen-port}/tcp`
+      path: /etc/nginx/conf.d/nginx.conf
+      container: nginx
 
   variables:
     proxy-target-host:
@@ -147,10 +138,3 @@ nginx:
     proxy-target-port:
       type: string
       value: 80
-
-  services:
-    nginx-svc:
-      container: nginx-reverse-proxy
-      port: <- `${listen-port}`
-      protocol: tcp
-      host-port: <- `${listen-port}` to-i
