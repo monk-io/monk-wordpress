@@ -2,8 +2,9 @@
 namespace: wordpress-mysql-nginx
 
 db: 
+  metadata:
+    private: true
   defines: runnable
-
   variables:
     image-tag:
       type: string
@@ -47,6 +48,8 @@ db:
       protocol: tcp
 
 wordpress:
+  metadata:
+    private: true
   defines: runnable
 
   connections:
@@ -101,6 +104,9 @@ wordpress:
 
 
 wp-nginx:
+  metadata:
+    private: true
+
   defines: runnable
   inherits: nginx/basic
   connections:

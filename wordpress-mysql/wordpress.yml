@@ -1,8 +1,9 @@
 namespace: wordpress-mysql
 
 db:
+  metadata:
+    private: true
   defines: runnable
-
   variables:
     image-tag:
       type: string
@@ -46,6 +47,8 @@ db:
       protocol: tcp
 
 wordpress:
+  metadata:
+    private: true
   defines: runnable
 
   connections:
@@ -66,7 +69,6 @@ wordpress:
       runnables:
         - wordpress-mysql/db
       timeout: 30
-
   variables:
     wordpress-db-user:
       type: string

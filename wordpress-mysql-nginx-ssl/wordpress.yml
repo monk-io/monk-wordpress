@@ -1,6 +1,8 @@
 namespace: wordpress-nginx-ssl
 
 db: 
+  metadata:
+    private: true
   defines: runnable
 
   variables:
@@ -45,6 +47,9 @@ db:
       protocol: tcp
 
 wordpress:
+  metadata:
+    private: true
+    
   defines: runnable
 
   connections:
@@ -96,6 +101,8 @@ wordpress:
       host-port: 8088
 
 wp-nginx:
+  metadata:
+    private: true
   defines: runnable
   inherits: nginx/ssl
 
