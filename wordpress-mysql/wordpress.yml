@@ -1,3 +1,4 @@
+---
 namespace: wordpress-mysql
 
 db:
@@ -14,32 +15,26 @@ db:
     database_name:
       type: string
       env: MYSQL_DATABASE
-      value: <- $mysql_database_name
+      value: wpdb
     database_user:
       env: MYSQL_USER
       type: string
-      value: <- $mysql_database_user
+      value: db_user
     mpassword:
       env: MYSQL_PASSWORD
       type: string
-      value: <- $mysql_database_password
+      value: RhgDPXPEnAgJ5q5g
     database_root_password:
       env: MYSQL_ROOT_PASSWORD
-      value: <- $mysql_database_root_password
+      value: RhgDPXPEnAgJ5q5g
       type: string
     wordpress_mysql_data:
       type: string
       value: wordpress-mysql
-
   containers:
     mysql:
-      paths:
-        - <- `${monk-volume-path}/${wordpress_mysql_data}:/var/lib/mysql`
-      ports:
-        - <- `0.0.0.0:${rpc-port}:3306`
       image-tag: <- `${image-tag}`
       image: mysql
-
   services:
     mysql-svc:
       container: mysql
@@ -50,20 +45,13 @@ wordpress:
   metadata:
     private: true
   defines: runnable
-
   connections:
     db:
       runnable: wordpress-mysql/db
       service: mysql-svc
-
   containers:
     wordpress:
       image: wordpress
-      paths:
-        - <- `${wordpress-data-path}:/var/www/html`
-      ports:
-        - <- `${server-port}:80`
-
   depends:
     wait-for:
       runnables:
@@ -73,29 +61,25 @@ wordpress:
     wordpress-db-user:
       type: string
       env: WORDPRESS_DB_USER
-      value: <- $mysql_database_user
+      value: db_user
     WORDPRESS_DB_PASSWORD:
       env: WORDPRESS_DB_PASSWORD
       type: string
-      value: <- $mysql_database_password
+      value: RhgDPXPEnAgJ5q5g
     wordpress-db-name:
       env: WORDPRESS_DB_NAME
       type: string
-      value: <- $mysql_database_name
+      value: wpdb
     wordpress-db-host:
       env: WORDPRESS_DB_HOST
       type: string
       value: <- connection-hostname("db") split(".dns.podman") join("")
-    wordpress-data-path:
-      type: string
-      value: <- `${monk-volume-path}/wordpress/web`
     server-port:
       type: int
-      value: <- $wordpress_port
-
+      value: 8088
   services:
     wordpress-svc:
       container: wordpress
-      port: 80
+      port: 8088
       protocol: tcp
-      host-port: <- `${server-port}`
+      host-port: 8088
