@@ -3,6 +3,34 @@ namespace: wordpress-mysql
 
 stack:
   defines: process-group
+  metadata:
+    website: https://wordpress.org/
+    name: Wordpress
+    icon: https://www.freepnglogos.com/uploads/wordpress-logo-png/wordpress-logo-png-transparent-wordpress-logo-images-pluspng-6.png
+    publisher: monk.io
+    source: https://build.trac.wordpress.org/browser
+    tags: WordPress, ContentManagementSystem, CMS, WebsiteBuilder, WebDesign, WebDevelopment, OpenSource, Customization, Plugins, Themes, Scalability, UserFriendly, Blogging, ECommerce, Portfolio
+    description: |
+      WordPress is a powerful and popular content management system that allows users to easily create, customize, and manage websites. With its intuitive interface and vast selection of plugins and themes, WordPress makes it easy for even novice users to create professional-looking websites without needing extensive technical expertise.
+
+      One of the key benefits of WordPress is its flexibility. It can be used to create a wide range of websites, from simple blogs to e-commerce sites, portfolios, and more. Its robust functionality and user-friendly design allow users to easily add and edit content, customize the site's appearance, and manage site features and functionality.
+
+      WordPress is also highly scalable, meaning it can grow with your business or website as it becomes more popular and gains more traffic. Its extensive selection of plugins and themes allow for endless customization options, and its open-source nature means that users can easily access and modify the code to suit their needs.
+
+      Overall, WordPress is a versatile and user-friendly platform that makes it easy for anyone to create a professional-looking website, regardless of their technical expertise.
+
+      ---
+
+      Notes:
+
+      | Variable            | Description                               | Default                                      |
+      | ------------------- | ----------------------------------------- | -------------------------------------------- |
+      | db_name             | Database username that wordpress will use | wpdb                                         |
+      | db_user             | Database authorized user password         | monk                                         |
+      | db_pass             | Database password that wordpress will use | ook6aroh1Ma9Theim8thieGheiY7aiweenae3eineech |
+      | wordpress-image-tag | The domain name you want to run           | latest                                       |
+      | mysql-image-tag     | The mysql version you want to use         | latest                                       |
+
   runnable-list:
     - wordpress-mysql/db
     - wordpress-mysql/wordpress

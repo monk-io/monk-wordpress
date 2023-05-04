@@ -88,15 +88,13 @@ foo@bar:~$ monk run monk-wordpress/stack
 
 The variables are in `stack.yml` file. You can quickly setup by editing the values here.
 
-| Variable                      | Description                                |
-|------------------------------ |------------------------------------------- |
-| mysql_database_user           | Database username that wordpress will use  |
-| mysql_database_root_password  | Database authorized user password          |
-| mysql_database_password       | Database password that wordpress will use  |
-| server_name                   | The domain name you want to run            |
-| mysql-image-tag               | The mysql version you want to use          |
-| mysql_database_name           | Database name that wordpress will use      |
-| wordpress_port                | Serve wordpress port                       |
+| Variable            | Description                               | Default                                      |
+| ------------------- | ----------------------------------------- | -------------------------------------------- |
+| db_name             | Database username that wordpress will use | wpdb                                         |
+| db_user             | Database authorized user password         | monk                                         |
+| db_pass             | Database password that wordpress will use | ook6aroh1Ma9Theim8thieGheiY7aiweenae3eineech |
+| wordpress-image-tag | The domain name you want to run           | latest                                       |
+| mysql-image-tag     | The mysql version you want to use         | latest                                       |
 
 ## Stop, remove and clean up workloads and templates
 

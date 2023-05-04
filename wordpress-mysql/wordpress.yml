@@ -2,56 +2,76 @@
 namespace: wordpress-mysql
 
 db:
-  metadata:
-    private: true
   defines: runnable
+  metadata:
+    name: mysql
+    description: |
+      MySQL is a free, open-source relational database management system (RDBMS) that uses Structured Query Language (SQL) to manage and manipulate data. It is widely used by web developers and businesses to create and manage databases for various applications.
+      Some of the key features of MySQL include:
+      Scalability: MySQL can handle large amounts of data and supports multiple users and concurrent connections.
+      High performance: MySQL is optimized for speed and can handle a large number of queries at once.
+      Security: MySQL has built-in security features that can help protect against unauthorized access and ensure data privacy.
+      Flexibility: MySQL is highly customizable and can be used with a variety of programming languages and operating systems.
+      Availability: MySQL is widely used and has a large user community, which means that there is a wealth of resources and support available for developers.
+    website: https://www.mysql.com/
+    publisher: monk.io
+    icon: https://labs.mysql.com/common/logos/mysql-logo.svg?v2
+    private: true
   variables:
-    image-tag:
-      type: string
-      value: latest
-    rpc-port:
-      type: int
-      value: 3306
     database_name:
-      type: string
       env: MYSQL_DATABASE
-      value: wpdb
+      type: string
+      value: <- $db_name default("wpdb")
     database_user:
       env: MYSQL_USER
       type: string
-      value: db_user
-    mpassword:
+      value: <- $db_user default("monk")
+    database_password:
       env: MYSQL_PASSWORD
       type: string
-      value: RhgDPXPEnAgJ5q5g
-    database_root_password:
-      env: MYSQL_ROOT_PASSWORD
-      value: RhgDPXPEnAgJ5q5g
-      type: string
-    wordpress_mysql_data:
-      type: string
-      value: wordpress-mysql
+      value: <- $db_pass default("ook6aroh1Ma9Theim8thieGheiY7aiweenae3eineech")
   containers:
     mysql:
-      image-tag: <- `${image-tag}`
       image: mysql
+      image-tag: <- $mysql-image-tag default("latest")
+      paths:
+        - <- `${monk-volume-path}/wordpress/db:/var/lib/mysql`
+      environment:
+        - MYSQL_RANDOM_ROOT_PASSWORD=true
   services:
-    mysql-svc:
+    mysql:
       container: mysql
       port: 3306
       protocol: tcp
 
 wordpress:
+  defines: runnable
   metadata:
     private: true
-  defines: runnable
+    website: https://wordpress.org/
+    name: Wordpress
+    icon: https://www.freepnglogos.com/uploads/wordpress-logo-png/wordpress-logo-png-transparent-wordpress-logo-images-pluspng-6.png
+    publisher: monk.io
+    source: https://build.trac.wordpress.org/browser
+    tags: WordPress, ContentManagementSystem, CMS, WebsiteBuilder, WebDesign, WebDevelopment, OpenSource, Customization, Plugins, Themes, Scalability, UserFriendly, Blogging, ECommerce, Portfolio
+    description: |
+      WordPress is a powerful and popular content management system that allows users to easily create, customize, and manage websites. With its intuitive interface and vast selection of plugins and themes, WordPress makes it easy for even novice users to create professional-looking websites without needing extensive technical expertise.
+
+      One of the key benefits of WordPress is its flexibility. It can be used to create a wide range of websites, from simple blogs to e-commerce sites, portfolios, and more. Its robust functionality and user-friendly design allow users to easily add and edit content, customize the site's appearance, and manage site features and functionality.
+
+      WordPress is also highly scalable, meaning it can grow with your business or website as it becomes more popular and gains more traffic. Its extensive selection of plugins and themes allow for endless customization options, and its open-source nature means that users can easily access and modify the code to suit their needs.
+
+      Overall, WordPress is a versatile and user-friendly platform that makes it easy for anyone to create a professional-looking website, regardless of their technical expertise.
   connections:
     db:
       runnable: wordpress-mysql/db
-      service: mysql-svc
+      service: mysql
   containers:
     wordpress:
       image: wordpress
+      image-tag: <- $wordpress-image-tag default("latest")
+      paths:
+        - <- `${monk-volume-path}/wordpress/www:/var/www/html`
   depends:
     wait-for:
       runnables:
@@ -61,25 +81,22 @@ wordpress:
     wordpress-db-user:
       type: string
       env: WORDPRESS_DB_USER
-      value: db_user
-    WORDPRESS_DB_PASSWORD:
+      value: <- $db_user default("monk")
+    wordpress-db-password:
       env: WORDPRESS_DB_PASSWORD
       type: string
-      value: RhgDPXPEnAgJ5q5g
+      value: <- $db_pass default("ook6aroh1Ma9Theim8thieGheiY7aiweenae3eineech")
     wordpress-db-name:
       env: WORDPRESS_DB_NAME
       type: string
-      value: wpdb
+      value: <- $db_name default("wpdb")
     wordpress-db-host:
       env: WORDPRESS_DB_HOST
       type: string
-      value: <- connection-hostname("db") split(".dns.podman") join("")
-    server-port:
-      type: int
-      value: 8088
+      value: <- connection-hostname("db")
   services:
-    wordpress-svc:
+    wordpress:
       container: wordpress
-      port: 8088
+      port: 80
       protocol: tcp
-      host-port: 8088
+      host-port: 80
