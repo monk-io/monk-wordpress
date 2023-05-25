@@ -53,7 +53,7 @@ wordpress:
     icon: https://www.freepnglogos.com/uploads/wordpress-logo-png/wordpress-logo-png-transparent-wordpress-logo-images-pluspng-6.png
     publisher: monk.io
     source: https://build.trac.wordpress.org/browser
-    tags: WordPress, ContentManagementSystem, CMS, WebsiteBuilder, WebDesign, WebDevelopment, OpenSource, Customization, Plugins, Themes, Scalability, UserFriendly, Blogging, ECommerce, Portfolio
+    tags: portfolio, cms, opensource, websitebuilder, customization, blogging, scalability, userfriendly, wordpress, ecommerce, plugins
     description: |
       WordPress is a powerful and popular content management system that allows users to easily create, customize, and manage websites. With its intuitive interface and vast selection of plugins and themes, WordPress makes it easy for even novice users to create professional-looking websites without needing extensive technical expertise.
 
